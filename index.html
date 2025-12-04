@@ -123,7 +123,7 @@
   // year: 1..4, term: 1|2 (semestre)
   // prereqs: array de códigos que deben estar completados
   const UNITS = [
-    // Año 1
+    // Year 1
     {code:"INDE1001", name:"Engineering Foundations: Principles, Design and Communication", year:1, term:1, prereqs:[]},
     {code:"MATH1020", name:"Calculus for Engineers", year:1, term:1, prereqs:[]},
     {code:"MCEN1000", name:"Engineering Mechanics", year:1, term:1, prereqs:[]},
@@ -133,7 +133,7 @@
     {code:"PRRE1003", name:"Resources, Processes and Materials Engineering", year:1, term:2, prereqs:[]},
     {code:"MATH1019", name:"Linear Algebra and Statistics for Engineers", year:1, term:2, prereqs:["MATH1020"]},
 
-    // Año 2
+    // Year 2
     {code:"MCEN2001", name:"Fundamentals of Thermodynamics", year:2, term:1, prereqs:["MATH1020","MCEN1000"]},
     {code:"MCEN2000", name:"Fundamentals of Strength of Materials", year:2, term:1, prereqs:["MCEN1000"]},
     {code:"MCEN2003", name:"Machine Dynamics", year:2, term:1, prereqs:["MCEN1000"]},
@@ -142,8 +142,9 @@
     {code:"MCEN2006", name:"Computer Aided Drawing & Engineering Modelling", year:2, term:2, prereqs:["INDE1001"]},
     {code:"ENGR2001", name:"Ethics and Sustainability in Engineering", year:2, term:2, prereqs:[]},
     {code:"MCEN2002", name:"Fundamentals of Mechanical Design", year:2, term:2, prereqs:["MCEN1000"]},
+    {code:"MCEN2004", name:"Manufacturing Processes", year:2, term:2, prereqs:["MCEN2006"]},
 
-    // Año 3
+    // Year 3
     {code:"MCEN3002", name:"Applied Fluid Mechanics", year:3, term:1, prereqs:["ENGR2000"]},
     {code:"MCEN3008", name:"Fundamentals of Heat Transfer", year:3, term:1, prereqs:["MCEN2001"]},
     {code:"MCEN3009", name:"Linear Systems and Vibrations", year:3, term:1, prereqs:["MCEN2003"]},
@@ -152,9 +153,9 @@
     {code:"MCEN3001", name:"Machine Design", year:3, term:2, prereqs:["MCEN2002","MCEN2000"]},
     {code:"MCEN3007", name:"Engineering Professionalism and Communication", year:3, term:2, prereqs:["ENGR2001"]},
     {code:"MCEN4005", name:"Mechanical Engineering Research Project 1", year:3, term:2, prereqs:["MCEN3002","MCEN3004","MCEN3008"]},
-    {code:"MCEN2004", name:"Manufacturing Processes", year:3, term:2, prereqs:["MCEN2006"]},
 
-    // Año 4
+
+    // Year 4
     {code:"MCEN4016", name:"Professional Engineering Management and Practice", year:4, term:1, prereqs:["MCEN3007"]}, // requisito explícito
     {code:"MCEN4018", name:"Electromechanical Energy Systems", year:4, term:1, prereqs:["ELEN1000","MCEN3009"]},
     {code:"MCEN4019", name:"Automatic Control Systems", year:4, term:2, prereqs:["MCEN3009"]},
