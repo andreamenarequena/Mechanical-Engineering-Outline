@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unit Outline – Mechanical Engineering (Curtin)</title>
+<style>
+  :root{
+    --bg: #0b1f17;
+    --card: #10251c;
+    --accent: #22c55e; /* verde */
+    --accent-2:#16a34a; /* verde más oscuro */
+    --muted: #9ae6b4;
+    --text:#e7f8ee;
+    --text-dim:#bfe7cf;
+    --border:#1e3a2f;
+    --lock:#6ee7b7;
+    --shadow: 0 10px 24px rgba(0,0,0,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:linear-gradient(180deg,#07140f, var(--bg));
+    color:var(--text); font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  }
+  header{
+    position:sticky; top:0; z-index:10; backdrop-filter:saturate(1.2) blur(6px);
+    background:rgba(7,20,15,.7); border-bottom:1px solid var(--border);
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:18px 20px}
+  h1{margin:0; font-size:28px; letter-spacing:.3px}
+  p.lead{margin:.3rem 0 0; color:var(--text-dim); font-size:14px}
+
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .btn{
+    appearance:none; border:1px solid var(--border); background:var(--card);
+    color:var(--text); padding:10px 12px; border-radius:14px; cursor:pointer;
+    box-shadow:var(--shadow); transition:transform .06s ease, border-color .2s ease, background .2s ease;
+    font-weight:600; font-size:14px
+  }
+  .btn:hover{transform:translateY(-1px); border-color:var(--accent)}
+  .btn-accent{background:linear-gradient(180deg,var(--accent),var(--accent-2)); border-color:transparent}
+  .btn-ghost{background:transparent}
+
+  .grid{
+    display:grid; grid-template-columns: repeat(4, minmax(250px,1fr));
+    gap:14px; align-items:start; padding:20px
+  }
+  .col{background:var(--card); border:1px solid var(--border); border-radius:18px; padding:14px; box-shadow:var(--shadow)}
+  .col h2{margin:6px 2px 10px; font-size:18px; color:var(--muted); letter-spacing:.4px}
+  .term{display:grid; gap:10px}
+
+  .unit{
+    position:relative;
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--border); border-radius:14px; padding:10px 12px; cursor:pointer;
+    transition: transform .06s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .unit:hover{transform:translateY(-1px); border-color:var(--accent)}
+  .unit .title{display:flex; justify-content:space-between; align-items:center; gap:8px}
+  .unit .code{font-weight:800; letter-spacing:.3px; font-size:12px; color:var(--muted)}
+  .unit .name{font-weight:700; font-size:15px}
+  .unit .meta{margin-top:6px; display:flex; gap:10px; font-size:12px; color:var(--text-dim)}
+
+  .unit.completed{background:rgba(34,197,94,.09); border-color:#2aa45e}
+  .unit.completed .name{ text-decoration:line-through; opacity:.85 }
+
+  .unit.locked{cursor:not-allowed; filter:saturate(.7) opacity(.92)}
+  .unit.locked::after{
+    content:"\1F512"; /* candado */
+    position:absolute; right:10px; top:8px; font-size:16px; color:var(--lock)
+  }
+  .pill{display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(0,0,0,.06)}
+  .pill.small{font-size:10px; padding:2px 6px}
+  .pill.green{border-color:#276749; background:rgba(34,197,94,.1)}
+
+  .legend{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+
+  /* Tooltip */
+  .has-tip{position:relative}
+  .tip{ position:absolute; left:12px; bottom: calc(100% + 8px); min-width:220px; max-width:300px; z-index:5;
+        background:#052014; color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px; box-shadow:var(--shadow);
+        font-size:12px; display:none }
+  .has-tip:hover .tip{ display:block }
+  .tip .miss{ color:#86efac }
+  .tip .req{ color:#d1fae5 }
+  .tip::after{ content:""; position:absolute; left:16px; top:100%; border:8px solid transparent; border-top-color:#052014 }
+
+  footer{ color:var(--text-dim); font-size:12px; padding:10px 20px 24px }
+  a{color:var(--muted)}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Ingeniería Mecánica (Curtin) – Malla Curricular Interactiva</h1>
+      <p class="lead">Marca unidades como <strong>aprobadas</strong>, desbloquea las dependientes y guarda tu progreso automáticamente en tu navegador.</p>
+      <div class="toolbar">
+        <button class="btn btn-accent" id="btn-export">Exportar progreso (JSON)</button>
+        <button class="btn btn-ghost" id="btn-import">Importar progreso</button>
+        <button class="btn btn-ghost" id="btn-reset">Reiniciar</button>
+        <span class="pill green">Tonos verdes · diseño simple</span>
+      </div>
+      <div class="legend">
+        <span class="pill"><span>✔️</span> Aprobada</span>
+        <span class="pill"><span>🔒</span> Bloqueada (pasa el cursor para ver requisitos)</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" id="grid"></section>
+  </main>
+
+  <footer class="wrap">
+    <div>
+      <strong>Nota:</strong> Esta malla incluye unidades del plan de Ingeniería Mecánica de Curtin (códigos y nombres) y algunos requisitos explícitos/razonables. Puedes ajustar los prerrequisitos dentro del código (objeto <code>UNITS</code>) si tu ruta difiere.
+    </div>
+  </footer>
+
+<script>
+  // ========= Datos de la malla =========
+  // year: 1..4, term: 1|2 (semestre)
+  // prereqs: array de códigos que deben estar completados
+  const UNITS = [
+    // Año 1
+    {code:"INDE1001", name:"Engineering Foundations: Principles, Design and Communication", year:1, term:1, prereqs:[]},
+    {code:"MATH1020", name:"Calculus for Engineers", year:1, term:1, prereqs:[]},
+    {code:"MCEN1000", name:"Engineering Mechanics", year:1, term:1, prereqs:[]},
+    {code:"ELEN1000", name:"Electrical Systems", year:1, term:1, prereqs:[]},
+
+    {code:"COMP1005", name:"Fundamentals of Programming", year:1, term:2, prereqs:[]},
+    {code:"PRRE1003", name:"Resources, Processes and Materials Engineering", year:1, term:2, prereqs:[]},
+    {code:"MATH1019", name:"Linear Algebra and Statistics for Engineers", year:1, term:2, prereqs:["MATH1020"]},
+
+    // Año 2
+    {code:"MCEN2001", name:"Fundamentals of Thermodynamics", year:2, term:1, prereqs:["MATH1020","MCEN1000"]},
+    {code:"MCEN2000", name:"Fundamentals of Strength of Materials", year:2, term:1, prereqs:["MCEN1000"]},
+    {code:"MCEN2003", name:"Machine Dynamics", year:2, term:1, prereqs:["MCEN1000"]},
+    {code:"ENGR2000", name:"Fluid Mechanics", year:2, term:1, prereqs:["MATH1020","MCEN1000"]},
+
+    {code:"MCEN2006", name:"Computer Aided Drawing & Engineering Modelling", year:2, term:2, prereqs:["INDE1001"]},
+    {code:"ENGR2001", name:"Ethics and Sustainability in Engineering", year:2, term:2, prereqs:[]},
+    {code:"MCEN2002", name:"Fundamentals of Mechanical Design", year:2, term:2, prereqs:["MCEN1000"]},
+
+    // Año 3
+    {code:"MCEN3002", name:"Applied Fluid Mechanics", year:3, term:1, prereqs:["ENGR2000"]},
+    {code:"MCEN3008", name:"Fundamentals of Heat Transfer", year:3, term:1, prereqs:["MCEN2001"]},
+    {code:"MCEN3009", name:"Linear Systems and Vibrations", year:3, term:1, prereqs:["MCEN2003"]},
+    {code:"MCEN3004", name:"Advanced Strength of Materials", year:3, term:1, prereqs:["MCEN2000"]},
+
+    {code:"MCEN3001", name:"Machine Design", year:3, term:2, prereqs:["MCEN2002","MCEN2000"]},
+    {code:"MCEN3007", name:"Engineering Professionalism and Communication", year:3, term:2, prereqs:["ENGR2001"]},
+    {code:"MCEN4005", name:"Mechanical Engineering Research Project 1", year:3, term:2, prereqs:["MCEN3002","MCEN3004","MCEN3008"]},
+    {code:"MCEN2004", name:"Manufacturing Processes", year:3, term:2, prereqs:["MCEN2006"]},
+
+    // Año 4
+    {code:"MCEN4016", name:"Professional Engineering Management and Practice", year:4, term:1, prereqs:["MCEN3007"]}, // requisito explícito
+    {code:"MCEN4018", name:"Electromechanical Energy Systems", year:4, term:1, prereqs:["ELEN1000","MCEN3009"]},
+    {code:"MCEN4019", name:"Automatic Control Systems", year:4, term:2, prereqs:["MCEN3009"]},
+    {code:"MCEN4006", name:"Mechanical Engineering Research Project 2", year:4, term:2, prereqs:["MCEN4005"]},
+    {code:"MCEN4017", name:"Systems Engineering Design", year:4, term:2, prereqs:["MCEN3001"]},
+  ];
+
+  // ========= Estado & utilidades =========
+  const KEY = "malla-curtin-mecanica.v1";
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(KEY)) || {} }catch{ return {} }
+  }
+  function saveState(state){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  let STATE = loadState(); // { INDE1001: true, ... }
+
+  const byYearTerm = UNITS.reduce((acc,u)=>{
+    const k = `${u.year}-${u.term}`;
+    (acc[k] ||= []).push(u);
+    return acc;
+  },{});
+
+  const grid = document.getElementById('grid');
+
+  function build(){
+    grid.innerHTML = '';
+    for(let year=1; year<=4; year++){
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `<h2>Año ${year}</h2>`;
+
+      // Dos términos
+      for(let term=1; term<=2; term++){
+        const key = `${year}-${term}`;
+        const list = (byYearTerm[key]||[]).sort((a,b)=> a.name.localeCompare(b.name));
+        const termBox = document.createElement('div');
+        termBox.className='term';
+        termBox.insertAdjacentHTML('beforeend', `<div class="pill small">Semestre ${term}</div>`);
+
+        list.forEach(u=>{
+          const {locked, missing} = getLockState(u);
+          const el = document.createElement('div');
+          el.className = `unit ${STATE[u.code]? 'completed':''} ${locked? 'locked has-tip':''}`;
+          el.dataset.code = u.code;
+          el.title = locked? `Bloqueada: falta ${missing.join(', ')}` : '';
+          el.innerHTML = `
+            <div class="title">
+              <div class="name">${u.name}</div>
+              <div class="code">${u.code}</div>
+            </div>
+            <div class="meta">
+              ${u.prereqs.length? `<span class="pill">Req: ${u.prereqs.join(', ')}</span>`: '<span class="pill">Sin requisitos</span>'}
+              ${STATE[u.code]? '<span class="pill green">✔️ Aprobada</span>':''}
+            </div>
+            ${locked? `<div class="tip">🔒 <strong>Bloqueada</strong><br><span class="req">Requisitos:</span> ${u.prereqs.join(', ') || '—'}<br><span class="miss">Te falta:</span> ${missing.join(', ')}</div>`:''}
+          `;
+
+          // Click handler
+          el.addEventListener('click', (ev)=>{
+            if(el.classList.contains('locked')){ return; }
+            const code = u.code;
+            const v = !STATE[code];
+            STATE[code] = v; saveState(STATE); build();
+          });
+
+          termBox.appendChild(el);
+        });
+
+        col.appendChild(termBox);
+      }
+      grid.appendChild(col);
+    }
+  }
+
+  function getLockState(u){
+    const missing = (u.prereqs||[]).filter(code=> !STATE[code]);
+    return {locked: missing.length>0, missing};
+  }
+
+  // ========= Acciones =========
+  document.getElementById('btn-reset').addEventListener('click', ()=>{
+    if(confirm('¿Borrar todo el progreso guardado?')){
+      STATE = {}; saveState(STATE); build();
+    }
+  });
+
+  document.getElementById('btn-export').addEventListener('click',()=>{
+    const data = JSON.stringify(STATE, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'progreso-malla-curtin.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-import').addEventListener('click',()=>{
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'application/json';
+    inp.addEventListener('change', async ()=>{
+      const file = inp.files?.[0]; if(!file) return;
+      const text = await file.text();
+      try{ STATE = JSON.parse(text)||{}; saveState(STATE); build(); }
+      catch{ alert('Archivo inválido'); }
+    });
+    inp.click();
+  });
+
+  // Inicializa
+  build();
+</script>
+</body>
+</html>
