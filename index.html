@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,8 +8,8 @@
   :root{
     --bg: #0b1f17;
     --card: #10251c;
-    --accent: #22c55e; /* verde */
-    --accent-2:#16a34a; /* verde más oscuro */
+    --accent: #22c55e; /* green */
+    --accent-2:#16a34a; /* darker green */
     --muted: #9ae6b4;
     --text:#e7f8ee;
     --text-dim:#bfe7cf;
@@ -67,7 +67,7 @@
 
   .unit.locked{cursor:not-allowed; filter:saturate(.7) opacity(.92)}
   .unit.locked::after{
-    content:"\1F512"; /* candado */
+    content:"\1F512"; /* lock icon */
     position:absolute; right:10px; top:8px; font-size:16px; color:var(--lock)
   }
   .pill{display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(0,0,0,.06)}
@@ -93,17 +93,17 @@
 <body>
   <header>
     <div class="wrap">
-      <h1>Ingeniería Mecánica (Curtin) – Malla Curricular Interactiva</h1>
-      <p class="lead">Marca unidades como <strong>aprobadas</strong>, desbloquea las dependientes y guarda tu progreso automáticamente en tu navegador.</p>
+      <h1>Mechanical Engineering (Curtin) – Interactive Curriculum Map</h1>
+      <p class="lead">Mark units as <strong>passed</strong>, unlock dependents, and automatically save your progress in your browser.</p>
       <div class="toolbar">
-        <button class="btn btn-accent" id="btn-export">Exportar progreso (JSON)</button>
-        <button class="btn btn-ghost" id="btn-import">Importar progreso</button>
-        <button class="btn btn-ghost" id="btn-reset">Reiniciar</button>
-        <span class="pill green">Tonos verdes · diseño simple</span>
+        <button class="btn btn-accent" id="btn-export">Export progress (JSON)</button>
+        <button class="btn btn-ghost" id="btn-import">Import progress</button>
+        <button class="btn btn-ghost" id="btn-reset">Reset</button>
+        <span class="pill green">Green tones · simple design</span>
       </div>
       <div class="legend">
-        <span class="pill"><span>✔️</span> Aprobada</span>
-        <span class="pill"><span>🔒</span> Bloqueada (pasa el cursor para ver requisitos)</span>
+        <span class="pill"><span>✔️</span> Passed</span>
+        <span class="pill"><span>🔒</span> Locked (hover to see requirements)</span>
       </div>
     </div>
   </header>
@@ -114,14 +114,14 @@
 
   <footer class="wrap">
     <div>
-      <strong>Nota:</strong> Esta malla incluye unidades del plan de Ingeniería Mecánica de Curtin (códigos y nombres) y algunos requisitos explícitos/razonables. Puedes ajustar los prerrequisitos dentro del código (objeto <code>UNITS</code>) si tu ruta difiere.
+      <strong>Note:</strong> This map includes units from Curtin’s Mechanical Engineering plan (codes and names) and a few explicit/reasonable requirements. You can adjust prerequisites in the code (the <code>UNITS</code> array) if your path differs.
     </div>
   </footer>
 
 <script>
-  // ========= Datos de la malla =========
-  // year: 1..4, term: 1|2 (semestre)
-  // prereqs: array de códigos que deben estar completados
+  // ========= Curriculum data =========
+  // year: 1..4, term: 1|2 (semester)
+  // prereqs: array of codes that must be completed
   const UNITS = [
     // Year 1
     {code:"INDE1001", name:"Engineering Foundations: Principles, Design and Communication", year:1, term:1, prereqs:[]},
@@ -154,17 +154,16 @@
     {code:"MCEN3007", name:"Engineering Professionalism and Communication", year:3, term:2, prereqs:["ENGR2001"]},
     {code:"MCEN4005", name:"Mechanical Engineering Research Project 1", year:3, term:2, prereqs:["MCEN3002","MCEN3004","MCEN3008"]},
 
-
     // Year 4
-    {code:"MCEN4016", name:"Professional Engineering Management and Practice", year:4, term:1, prereqs:["MCEN3007"]}, // requisito explícito
+    {code:"MCEN4016", name:"Professional Engineering Management and Practice", year:4, term:1, prereqs:["MCEN3007"]}, /* explicit requirement */
     {code:"MCEN4018", name:"Electromechanical Energy Systems", year:4, term:1, prereqs:["ELEN1000","MCEN3009"]},
     {code:"MCEN4019", name:"Automatic Control Systems", year:4, term:2, prereqs:["MCEN3009"]},
     {code:"MCEN4006", name:"Mechanical Engineering Research Project 2", year:4, term:2, prereqs:["MCEN4005"]},
     {code:"MCEN4017", name:"Systems Engineering Design", year:4, term:2, prereqs:["MCEN3001"]},
   ];
 
-  // ========= Estado & utilidades =========
-  const KEY = "malla-curtin-mecanica.v1";
+  // ========= State & utilities =========
+  const KEY = "curtin-curriculum.v1";
   function loadState(){
     try{ return JSON.parse(localStorage.getItem(KEY)) || {} }catch{ return {} }
   }
@@ -184,36 +183,36 @@
     for(let year=1; year<=4; year++){
       const col = document.createElement('div');
       col.className = 'col';
-      col.innerHTML = `<h2>Año ${year}</h2>`;
+      col.innerHTML = `<h2>Year ${year}</h2>`;
 
-      // Dos términos
+      // Two terms
       for(let term=1; term<=2; term++){
         const key = `${year}-${term}`;
         const list = (byYearTerm[key]||[]).sort((a,b)=> a.name.localeCompare(b.name));
         const termBox = document.createElement('div');
         termBox.className='term';
-        termBox.insertAdjacentHTML('beforeend', `<div class="pill small">Semestre ${term}</div>`);
+        termBox.insertAdjacentHTML('beforeend', `<div class="pill small">Semester ${term}</div>`);
 
         list.forEach(u=>{
           const {locked, missing} = getLockState(u);
           const el = document.createElement('div');
           el.className = `unit ${STATE[u.code]? 'completed':''} ${locked? 'locked has-tip':''}`;
           el.dataset.code = u.code;
-          el.title = locked? `Bloqueada: falta ${missing.join(', ')}` : '';
+          el.title = locked? `Locked: missing ${missing.join(', ')}` : '';
           el.innerHTML = `
             <div class="title">
               <div class="name">${u.name}</div>
               <div class="code">${u.code}</div>
             </div>
             <div class="meta">
-              ${u.prereqs.length? `<span class="pill">Req: ${u.prereqs.join(', ')}</span>`: '<span class="pill">Sin requisitos</span>'}
-              ${STATE[u.code]? '<span class="pill green">✔️ Aprobada</span>':''}
+              ${u.prereqs.length? `<span class="pill">Req: ${u.prereqs.join(', ')}</span>`: '<span class="pill">No prerequisites</span>'}
+              ${STATE[u.code]? '<span class="pill green">✔️ Passed</span>':''}
             </div>
-            ${locked? `<div class="tip">🔒 <strong>Bloqueada</strong><br><span class="req">Requisitos:</span> ${u.prereqs.join(', ') || '—'}<br><span class="miss">Te falta:</span> ${missing.join(', ')}</div>`:''}
+            ${locked? `<div class="tip">🔒 <strong>Locked</strong><br><span class="req">Requirements:</span> ${u.prereqs.join(', ') || '—'}<br><span class="miss">Missing:</span> ${missing.join(', ')}</div>`:''}
           `;
 
           // Click handler
-          el.addEventListener('click', (ev)=>{
+          el.addEventListener('click', ()=>{
             if(el.classList.contains('locked')){ return; }
             const code = u.code;
             const v = !STATE[code];
@@ -234,9 +233,9 @@
     return {locked: missing.length>0, missing};
   }
 
-  // ========= Acciones =========
+  // ========= Actions =========
   document.getElementById('btn-reset').addEventListener('click', ()=>{
-    if(confirm('¿Borrar todo el progreso guardado?')){
+    if(confirm('Clear all saved progress?')){
       STATE = {}; saveState(STATE); build();
     }
   });
@@ -246,7 +245,7 @@
     const blob = new Blob([data], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'progreso-malla-curtin.json'; a.click();
+    a.href = url; a.download = 'curtin-curriculum-progress.json'; a.click();
     URL.revokeObjectURL(url);
   });
 
@@ -257,12 +256,12 @@
       const file = inp.files?.[0]; if(!file) return;
       const text = await file.text();
       try{ STATE = JSON.parse(text)||{}; saveState(STATE); build(); }
-      catch{ alert('Archivo inválido'); }
+      catch{ alert('Invalid file'); }
     });
     inp.click();
   });
 
-  // Inicializa
+  // Initialize
   build();
 </script>
 </body>
